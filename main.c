@@ -28,7 +28,7 @@ struct timespec sleep_time = {
 
 void* print_info(void* unused) {
 	for(;;){
-		printf("\e[5;0HUDP Pixelflut\nnc -u %s %s\npixels/s: %6" PRIu64, ip, port, counter*1000000000/((uint64_t)sleep_time.tv_nsec));
+		printf("\033[5;0HUDP Pixelflut\nnc -u %s %s\npixels/s: %6" PRIu64, ip, port, counter*1000000000/((uint64_t)sleep_time.tv_nsec));
 		counter = 0;
 		nanosleep(&sleep_time, NULL);
 	}
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 		ip = argv[1];
 		port = argv[2];
 	}
-	int row, col, width, height, bitspp, bytespp;
+	int width, height, bitspp, bytespp;
 	unsigned int *data;
 
 	// Öffnen des Gerätes
@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
 			perror("Error in receive");
 		} else {
 			unsigned int x,y,r,g,b,n;
-			n = sscanf(buf, "PX %d %d %02x%02x%02x", &x, &y, &r, &g, &b);
+			n = sscanf(buf, "PX %u %u %02x%02x%02x", &x, &y, &r, &g, &b);
 			if (n == 5 && x<width && y<height) {
 				data[y*width+x] = r<<16 | g<<8 | b;
 			}
